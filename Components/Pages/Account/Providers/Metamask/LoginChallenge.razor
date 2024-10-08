@@ -1,0 +1,75 @@
+﻿@page "/account/provider/metamask/login-challenge"
+@using Microsoft.AspNetCore.DataProtection
+@using Microsoft.Extensions.Caching.Memory
+@inject IMemoryCache MemoryCache
+@inject IHttpContextAccessor HttpContextAccessor
+@inject IDataProtectionProvider DataProtectionProvider
+@inject NavigationManager NavigationManager
+
+<PageScript Src=@this.GetJSFilePath() />
+@if (ShouldRedirect)
+{
+    <h2>Redirecting...</h2>
+    <form id="redirectForm" method="post" action="/signin-metamask" style="display:none;">
+        <input type="hidden" name="account" value="@Model.Account" />
+        <input type="hidden" name="payload" value="@Model.Payload" />
+        <input type="hidden" name="signature" value="@Model.Signature" />
+        <input type="hidden" name="returnUrl" value="@ReturnUrl" />
+    </form>
+}
+else
+{
+    <h2>Sign-in</h2>
+    <EditForm @ref=EditForm FormName="LogIn" Model=@Model OnSubmit=SaveAsync>
+        <input type="hidden" name="Model.Account" value="@Model.Account" id="accountInput" />
+
+        <DataAnnotationsValidator />
+        <ValidationSummary />
+
+        <!-- Metamask Sign Row -->
+        <div class="row metamask-sign" style="display:none">
+            <div class="col">
+                <button id="signPayloadButton" type="button" class="btn btn-primary">
+                    Sign in with Metamask
+                </button>
+            </div>
+        </div>
+
+        <!-- Manual Sign Payload Row -->
+        <div class="row manual-sign" style="display:none">
+            <div class="col">
+                <div>
+                    <label for="payloadInput">Payload to sign</label>
+                    <div class="input-group">
+                        <textarea class="form-control" @bind="@Model.Payload" name="Model.Payload" rows="5" id="payloadInput" readonly></textarea>
+                        <ValidationMessage For=@(() => Model.Payload) />
+                        <button id="copyPayloadButton" type="button" class="btn btn-secondary">Copy</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manual Sign Signature Row -->
+        <div class="row manual-sign" style="display:none">
+            <div class="col">
+                <div>
+                    <label for="signatureInput">Signature</label>
+                    <div class="input-group">
+                        <textarea class="form-control" @bind="@Model.Signature" name="Model.Signature" rows="5" id="signatureInput"></textarea>
+                        <ValidationMessage For=@(() => Model.Signature) />
+                        <button id="pasteSignatureButton" type="button" class="btn btn-secondary">Paste</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Sign In Button Row -->
+        <div class="row manual-sign" style="display:none">
+            <div class="col">
+                <button id="signInButton" type="submit" class="btn btn-primary">
+                    Sign-in
+                </button>
+            </div>
+        </div>
+    </EditForm>
+}

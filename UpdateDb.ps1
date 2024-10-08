@@ -1,0 +1,1 @@
+dotnet ef database update --project NetizenAuthTestBlazorWebApp.csproj --startup-project NetizenAuthTestBlazorWebApp.csproj -- --environment Development

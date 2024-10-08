@@ -1,0 +1,49 @@
+﻿@page "/account/provider/metamask/login"
+@inject NavigationManager NavigationManager
+<h1>Login with Metamask</h1>
+<PageScript Src=@this.GetJSFilePath()/>
+
+<EditForm @ref=EditForm FormName="LogIn" Model=@Model OnSubmit=Save>
+    <DataAnnotationsValidator />
+    <ValidationSummary />
+
+    <div class="row">
+        <div class="col">
+            @if (!Accounts.Any())
+            {
+                <label>
+                    Account number
+                    <div class="input-group">
+                        <input class="form-control" @bind="@Model.Account" name="Model.Account" />
+                        <ValidationMessage For=@(() => Model.Account) />
+                        <button id="selectAccountButton" type="button" class="btn btn-secondary" style="display:none">Select</button>
+                    </div>
+                </label>
+            }
+            else
+            {
+                <label for="account">
+                    Select your account number
+
+                    <div>
+                        <select class="form-control" @bind="@Model.Account" name="Model.Account">
+                            @foreach (string account in Accounts)
+                            {
+                                <option value="@account">@account</option>
+                            }
+                        </select>
+                        <ValidationMessage For=@(() => Model.Account) />
+                    </div>
+                </label>
+            }
+        </div>
+    </div>
+
+    <div class="row">
+        <div class="col">
+            <button class="btn btn-primary" type="submit">Next &gt;&gt;</button>
+        </div>
+    </div>
+</EditForm>
+
+
